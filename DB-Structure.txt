@@ -1,0 +1,42 @@
+# Users  [login ke baad store hoga] {password firebase auth k trough hash hoke securly store ho jyega}
+users/
+  userId/
+    name: "Chacha"
+    email: "user@gmail.com"
+    location: "West Bengal" — for nearby alerts filter
+    createdAt: "timestamp" Firebase server timestamp
+
+# Reports  [Ye main data hai jo CropSOS use karega]
+reports/
+  reportId/
+    userId: "abc123"
+    imageUrl: "image_link"
+    disease: "Leaf Blight"
+    confidence: 0.89
+    advice: "Use fungicide..."
+    cropType: "Tomato", "Wheat" — for history filter
+    severity: "low" | "medium" | "critical" — for badge colors
+    location: "West Bengal" — triggers alert update in alerts/
+    createdAt: "timestamp" -Used for history ordering
+
+# Alerts  [“Nearby alerts” feature]
+alerts/
+  alertId/
+    disease: "Leaf Blight"
+    location: "West Bengal"
+    count: 5 [How many reports in this region]
+    severity: "high" if count > 10 — drives red badge in UI
+    lastUpdated: "timestamp" [Auto-set on each new report]
+
+# Feedbacks
+feedback/ 
+  reportId: Ref to reports/ doc
+  userId: Who gave feedback
+  isCorrect: [boolean type] Farmer taps "Yes / No" on result page
+  createdAt: timestamp
+
+
+
+*The brand new feedback/ collection is small but powerful for judging. 
+One button on "results page" — "Was this diagnosis correct? Yes / No" — populates it. 
+When judges ask "how do you know the AI is accurate?", you can point to real feedback data. 
