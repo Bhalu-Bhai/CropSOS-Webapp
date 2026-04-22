@@ -4,6 +4,7 @@ from routes.predict import predict_bp
 import logging
 import os
 from dotenv import load_dotenv
+from routes.auth import auth_bp
 
 load_dotenv()
 
@@ -16,8 +17,10 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+
 # CORS — allow only your frontend domain in production
 CORS(app, origins=[
+    "http://localhost:8080",
     "http://localhost:5173",      # Vue dev server
     "http://localhost:3000",
     os.getenv("FRONTEND_URL", "*")  # Set in .env for production
@@ -25,6 +28,7 @@ CORS(app, origins=[
 
 # Register blueprints
 app.register_blueprint(predict_bp)
+app.register_blueprint(auth_bp)
 
 # Health check endpoint
 @app.route('/')

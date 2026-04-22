@@ -345,7 +345,7 @@ export default {
       this.isLoading = true
       this.apiError  = ''
       try {
-        await axios.post('YOUR_URL/api/auth/register', {
+        await axios.post('http://localhost:5000/register', {
           first_name:     this.form.firstName,
           last_name:      this.form.lastName,
           email:          this.form.email,
