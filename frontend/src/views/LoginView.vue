@@ -125,7 +125,7 @@ export default {
       this.apiError  = ''
 
       try {
-        const res = await axios.post('YOUR_URL/api/auth/login', {
+        const res = await axios.post('http://localhost:5000/login', {
           email:    this.form.email,
           password: this.form.password,
           remember: this.form.remember
