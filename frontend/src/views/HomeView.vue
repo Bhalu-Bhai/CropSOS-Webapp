@@ -19,7 +19,7 @@
               <span class="material-symbols-outlined">upload_file</span>
               Upload Image
             </button>
-            <button class="btn-text">Learn More</button>
+            <button class="btn-text" @click="$router.push('/about')">Learn More</button>
           </div>
         </div>
         <div class="hero-right">
