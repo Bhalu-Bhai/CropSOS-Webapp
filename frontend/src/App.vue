@@ -13,6 +13,9 @@
           <li :class="{ bottomLine: activeTap === 'history' }">
             <router-link to="/history" @click.native="activeTap = 'history'">History</router-link>
           </li>
+          <li :class="{ bottomLine: activeTap === 'feedback' }">
+            <router-link to="/feedback" @click.native="activeTap = 'feedback'">Feedback</router-link>
+          </li>
         </ul>
         <div class="nav-icons">
           <router-link class="nav-icon-link" to="/notifications" @click.native="activeTap = 'notifications'" aria-label="Notifications">
@@ -65,6 +68,7 @@ export default {
       else if (path.startsWith('/history')) this.activeTap = 'history'
       else if (path.startsWith('/profile')) this.activeTap = 'profile'
       else if (path.startsWith('/account')) this.activeTap = 'account'
+      else if (path.startsWith('/feedback')) this.activeTap = 'feedback'
     }
   }
 }
