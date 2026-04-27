@@ -5,6 +5,9 @@ import DetectView from '@/views/DetectView.vue'
 import AccountView from '@/views/AccountView.vue'
 import LoginView from '@/views/LoginView.vue'
 import RegisterView from '@/views/RegisterView.vue'
+import ProfileView from '@/views/ProfileView.vue'
+import HistoryView from '@/views/HistoryView.vue'
+import FeedbackView from '@/views/FeedbackView.vue'
 
 Vue.use(VueRouter)
 
@@ -28,6 +31,21 @@ const routes = [
     component: DetectView
   },
   {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView
+  },
+  {
+    path: '/history',
+    name: 'history',
+    component: HistoryView
+  },
+  {
+    path: '/feedback',
+    name: 'feedback',
+    component: FeedbackView
+  },
+  {
     path: '/account',
     component: AccountView,
     children: [
@@ -42,6 +60,23 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const isAuthenticated = !!localStorage.getItem('token')
+  const authRequiredRoutes = ['/detect', '/history', '/profile']
+  const authPages = ['/account/login', '/account/register', '/account']
+
+  const requiresAuth = authRequiredRoutes.some(route => to.path.startsWith(route))
+  const isAuthPage = authPages.includes(to.path)
+
+  if (requiresAuth && !isAuthenticated) {
+    next('/account/login')
+  } else if (isAuthPage && isAuthenticated) {
+    next('/profile')
+  } else {
+    next()
+  }
 })
 
 export default router

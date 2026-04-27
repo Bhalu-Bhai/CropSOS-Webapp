@@ -330,14 +330,15 @@
 
 <script>
 import axios from 'axios'
- 
+
 export default {
   name: 'DetectView',
- 
+
   data() {
     return {
       selectedFile:  null,
       previewUrl:    null,
+      previewDataUrl:null,
       isDragging:    false,
       isAnalyzing:   false,
       uploadError:   '',
@@ -358,7 +359,7 @@ export default {
       ]
     }
   },
- 
+
   mounted() {
     try {
       const user = JSON.parse(localStorage.getItem('user') || '{}')
@@ -373,39 +374,47 @@ export default {
       this.userArea     = 'Your Region'
     }
   },
- 
+
   methods: {
- 
+
     triggerFileInput() { this.$refs.fileInput.click() },
- 
+
     handleFileSelect(e) {
       const file = e.target.files[0]
       if (file) this.setFile(file)
     },
- 
+
     handleDrop(e) {
       this.isDragging = false
       const file = e.dataTransfer.files[0]
       if (file) this.setFile(file)
     },
- 
+
     setFile(file) {
       this.selectedFile = file
       this.uploadError  = ''
       this.previewUrl   = URL.createObjectURL(file)
+      
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        this.previewDataUrl = e.target.result
+      }
+      reader.readAsDataURL(file)
     },
- 
+
     clearFile() {
       this.selectedFile = null
       this.previewUrl   = null
+      this.previewDataUrl = null
       this.uploadError  = ''
       this.$refs.fileInput.value = ''
     },
- 
+
     resetScan() {
       this.resultData   = null
       this.selectedFile = null
       this.previewUrl   = null
+      this.previewDataUrl = null
       this.uploadError  = ''
       this.showHeatmap        = false
       this.heatmapGrid        = []
@@ -415,6 +424,13 @@ export default {
     // ════════════════════════════════════════
     async analyzeCrop() {
       if (!this.selectedFile) return
+
+      const token = localStorage.getItem('token')
+      if (!token) {
+        this.$router.push('/account/login')
+        return
+      }
+
       this.isAnalyzing = true
       this.uploadError = ''
 
@@ -469,7 +485,7 @@ export default {
 
         // Step 3: Map to resultData
         this.resultData = {
-          diseaseName:       d.disease          || 'Unknown',
+          diseaseName:       d.disease_name    || 'Unknown',
           scientificName:    d.scientific_name  || '',
           confidence:        d.confidence       || null,
           severity:          (d.severity || 'medium').toUpperCase(),
@@ -483,9 +499,7 @@ export default {
 
       } catch (err) {
         console.error('[CropSOS] analyze error:', err)
-        this.uploadError = err.response?.data?.error
-          || err.response?.data?.message
-          || 'Analysis failed. Please try again.'
+        this.uploadError = err.response?.data?.message || 'Analysis failed. Please try again.'
       } finally {
         this.isAnalyzing = false
       }
